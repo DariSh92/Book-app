@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 import { addBook } from "../../redux/books/actionCreators";
 import "./BookForm.css";
 const BookForm = () => {
@@ -11,12 +12,13 @@ const BookForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (title && author) {
-      dispatch(addBook({ title, author }));
+      dispatch(addBook({ title, author, id: uuidv4() }));
       console.log(addBook({ title, author }));
       setAuthor("");
       setTitle("");
     }
   };
+
   return (
     <div className="app-block book-form">
       <h2>Add a New Book</h2>
@@ -41,6 +43,7 @@ const BookForm = () => {
         </div>
         <button type="submit">AddBook</button>
       </form>
+  
     </div>
   );
 };
