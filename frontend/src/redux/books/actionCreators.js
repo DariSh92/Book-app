@@ -14,3 +14,10 @@ export const deleteBook = (id) => {
     payload: id,
   };
 };
+
+export const addToggle = (id) => {
+  return {
+    type: a.TOGGLE_FAVORITE,
+    payload: id,
+  }
+}
