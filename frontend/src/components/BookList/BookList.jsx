@@ -6,29 +6,44 @@ import {
   selectAuthorFilter,
   selectOnlyFavorite,
 } from "../../redux/slices/filterSlice";
-
 import "./BookList.css";
 
 const BookList = () => {
   const dispatch = useDispatch();
   const books = useSelector((state) => state.books);
-  const handleDeleteBook = (id) => {
-    dispatch(deleteBook(id));
-  };
   const titleFilter = useSelector(selectTitleFilter);
   const authorFilter = useSelector(selectAuthorFilter);
   const onlyFavorite = useSelector(selectOnlyFavorite);
+
+  const handleDeleteBook = (id) => {
+    dispatch(deleteBook(id));
+  };
 
   const handleToggleFavorite = (id) => {
     dispatch(addToggle(id));
   };
 
+  const highlightMatch = (text = "", filter = "") => {
+    if (!filter.trim()) return text; // Если фильтр пустой, вернуть обычный текст
+
+    const regex = new RegExp(`(${filter})`, "gi");
+    return text.split(regex).map((part, index) =>
+      part.toLowerCase() === filter.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: "yellow" }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   const filteredBooks = books.filter((book) => {
     const matchesTitle = book.title
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(titleFilter.toLowerCase());
     const matchesAuthor = book.author
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(authorFilter.toLowerCase());
     const matchesFavorite = onlyFavorite ? book.isFavorite : true;
     return matchesTitle && matchesAuthor && matchesFavorite;
@@ -37,14 +52,15 @@ const BookList = () => {
   return (
     <div className="app-block book-list">
       <h2>BookList</h2>
-      {books.length === 0 ? (
+      {filteredBooks.length === 0 ? (
         <p>No books available</p>
       ) : (
         <ul>
-          {filteredBooks.map((book, id) => (
-            <li key={id}>
+          {filteredBooks.map((book) => (
+            <li key={book.id}>
               <div className="book-info">
-                {book.title} by {book.author}
+                {highlightMatch(book.title, titleFilter)} by{" "}
+                {highlightMatch(book.author, authorFilter)}
               </div>
               <div className="book-actions">
                 <div onClick={() => handleToggleFavorite(book.id)}>
@@ -54,7 +70,6 @@ const BookList = () => {
                     <BsBookmarkStar className="star-icon" />
                   )}
                 </div>
-
                 <button onClick={() => handleDeleteBook(book.id)}>
                   Delete
                 </button>
@@ -66,4 +81,5 @@ const BookList = () => {
     </div>
   );
 };
+
 export default BookList;
