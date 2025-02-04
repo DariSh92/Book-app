@@ -1,8 +1,38 @@
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setFilter,
+  selectTitleFilter,
+  resetFilters,
+} from "../../redux/slices/filterSlice";
 import "./Filter.css";
+
 const Filter = () => {
+  const dispatch = useDispatch();
+  const filterInput = useSelector(selectTitleFilter);
+  // const filterInput = useSelector((state) => state.filter.title);
+
+  const handleInputChange = (e) => {
+    dispatch(setFilter(e.target.value));
+  };
+
+  const handleResetFilters = () => {
+    dispatch(resetFilters());
+  };
   return (
     <div className="app-block filter">
-      <h2>Filters</h2>
+      <div className="filter-row">
+        <div className="filter-group">
+          <input
+            onChange={handleInputChange}
+            value={filterInput}
+            type="text"
+            placeholder="Search ..."
+          />
+        </div>
+      </div>
+      <button type="button" onClick={() => handleResetFilters()}>
+        Reset Filters
+      </button>
     </div>
   );
 };
