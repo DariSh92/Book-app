@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import { thunkFunction } from "../../redux/slices/booksSlice";
 import { addBook } from "../../redux/slices/booksSlice";
 import createBookWithID from "../../utils/createBookWithID";
 import booksData from "../../data/books.json";
@@ -15,30 +15,34 @@ const BookForm = () => {
   const handleAddRandomBook = () => {
     const randomIndex = Math.floor(Math.random() * booksData.length);
     const randomBook = booksData[randomIndex];
-    const randomBookID = createBookWithID(randomBook);
+    const randomBookID = createBookWithID(randomBook, "random");
     dispatch(addBook(randomBookID));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (title && author) {
-      dispatch(addBook(createBookWithID({ title, author })));
+      dispatch(addBook(createBookWithID({ title, author }, "manual")));
 
       setAuthor("");
       setTitle("");
     }
   };
 
-  const handleAddRandomBookAPI = async () => {
-    try {
-      const response = await axios.get("http://localhost:4000/random-book");
-      if (response.data && response.data.title && response.data.author) {
-        dispatch(addBook(createBookWithID(response.data)));
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleAddRandomBookAPI = () => {
+    dispatch(thunkFunction);
   };
+
+  // const handleAddRandomBookAPI = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:4000/random-book");
+  //     if (response.data && response.data.title && response.data.author) {
+  //       dispatch(addBook(createBookWithID(response.data, "API")));
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="app-block book-form">
