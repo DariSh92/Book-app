@@ -8,7 +8,9 @@ export const fetchBook = createAsyncThunk(
   "books/fetchBook",
   async (thunkAPI) => {
     try {
-      const response = await axios.get("http://localhost:4000/random-book");
+      const response = await axios.get(
+        "http://localhost:4000/random-book-delay"
+      );
 
       return response.data;
     } catch (error) {
