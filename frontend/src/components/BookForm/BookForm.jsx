@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBook, fetchBook } from "../../redux/slices/booksSlice";
+import { setError } from "../../redux/slices/errorSlice";
 import createBookWithID from "../../utils/createBookWithID";
 import booksData from "../../data/books.json";
 import "./BookForm.css";
@@ -25,6 +26,8 @@ const BookForm = () => {
 
       setAuthor("");
       setTitle("");
+    } else {
+      dispatch(setError("Title and author are required"));
     }
   };
 
