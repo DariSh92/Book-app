@@ -36,14 +36,22 @@ const booksSlice = createSlice({
       );
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchBook.fulfilled, (state, action) => {
+  extraReducers: {
+    [fetchBook.fulfilled]: (state, action) => {
       if (action.payload.title && action.payload.author) {
         console.log("fetchBook.fulfilled вызван ", action);
         state.push(createBookWithID(action.payload, "API"));
       }
-    });
+    },
   },
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchBook.fulfilled, (state, action) => {
+  //     if (action.payload.title && action.payload.author) {
+  //       console.log("fetchBook.fulfilled вызван ", action);
+  //       state.push(createBookWithID(action.payload, "API"));
+  //     }
+  //   });
+  // },
 });
 
 // вариант чтоб использовать асинхронную функцию в редьюсере
