@@ -1,7 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import createBookWithID from "../../utils/createBookWithID";
 import axios from "axios";
 const initialState = [];
+
+export const fetchBook = createAsyncThunk("books/fetchBook", async () => {
+  console.log("fetchBook вызван");
+  const response = await axios.get("http://localhost:4000/random-book");
+  console.log("fetchBook получил данные:", response.data);
+  return response.data;
+});
 
 const booksSlice = createSlice({
   name: "books",
@@ -21,18 +28,17 @@ const booksSlice = createSlice({
       );
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchBook.fulfilled, (state, action) => {
+      if (action.payload.title && action.payload.author) {
+        console.log("fetchBook.fulfilled вызван ", action);
+        state.push(createBookWithID(action.payload, "API"));
+      }
+    });
+  },
 });
+
 // вариант чтоб использовать асинхронную функцию в редьюсере
 export const { addBook, deleteBook, addToggle } = booksSlice.actions;
-export const thunkFunction = async (dispatch, getState) => {
-  try {
-    const response = await axios.get("http://localhost:4000/random-book");
-    if (response.data && response.data.title && response.data.author) {
-      dispatch(addBook(createBookWithID(response.data, "API")));
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 export const selectBooks = (state) => state.books;
 export default booksSlice.reducer;
