@@ -26,7 +26,6 @@ const BookList = () => {
   const handleToggleFavorite = (id) => {
     dispatch(addToggle(id));
   };
-
   const highlightMatch = (text = "", filter = "") => {
     if (!filter.trim()) return text;
 
